@@ -1,9 +1,13 @@
+import os
+import subprocess
+
 class Node:
     def __init__(self, value):
         self.value  = value
         self.left   = None
         self.right  = None
         self.height = 0
+        self.codigo = None
 
 class AVLTree:
     def __init__(self):
@@ -100,12 +104,39 @@ class AVLTree:
             self._postorder(tmp.left)            
             self._postorder(tmp.right)
             print(tmp.value,end = ' ')
+
+    def DefinirNodos(self, tmp, file):
+        if tmp:
+            if tmp.left:
+                file.write(str(tmp.value) + '->' + str(tmp.left.value) + os.linesep)
+            if tmp.right:
+                file.write(str(tmp.value) + '->' + str(tmp.right.value) + os.linesep)
+            self.DefinirNodos(tmp.left, file)            
+            self.DefinirNodos(tmp.right, file)
+
+
+    def ImprimirArbol(self):
+        self._ImprimirArbol(self.root)
+
+    def _ImprimirArbol(self, tmp):
+        file = open('arbol.dot', "w")
+        file.write("digraph grafica{" + os.linesep)
+        file.write("rankdir=TB;" + os.linesep)
+        file.write("node [shape = circle];" + os.linesep)
+        self.DefinirNodos(self.root, file)
+        file.write("}" + os.linesep)
+        file.close()
+        subprocess.call('dot -Tpng arbol.dot -o arbol.png')
+        os.system('arbol.png')
+
+
            
 
 #init
 t = AVLTree()
 
 #add
+t.add(5)
 t.add(5)
 t.add(10)
 t.add(20)
@@ -120,3 +151,5 @@ print()
 t.inorder()
 print()
 t.postorder()
+
+t.ImprimirArbol()
