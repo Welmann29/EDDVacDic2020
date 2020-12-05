@@ -1,5 +1,6 @@
 import os
 import subprocess
+import time
 
 class Node:
     def __init__(self, value):
@@ -7,7 +8,6 @@ class Node:
         self.left   = None
         self.right  = None
         self.height = 0
-        self.codigo = None
 
 class AVLTree:
     def __init__(self):
@@ -93,7 +93,7 @@ class AVLTree:
     def _inorder(self, tmp):
         if tmp:
             self._inorder(tmp.left)
-            print(tmp.value,end = ' ')
+            print(str(tmp.value) + ', '+ str(tmp.height),end = ' ')
             self._inorder(tmp.right)
 
     def postorder(self):
@@ -114,7 +114,6 @@ class AVLTree:
             self.DefinirNodos(tmp.left, file)            
             self.DefinirNodos(tmp.right, file)
 
-
     def ImprimirArbol(self):
         self._ImprimirArbol(self.root)
 
@@ -129,6 +128,141 @@ class AVLTree:
         subprocess.call('dot -Tpng arbol.dot -o arbol.png')
         os.system('arbol.png')
 
+    def buscar(self, valor):
+        return self._buscar(self.root, valor)
+
+    def _buscar(self, tmp, valor):
+        if tmp:
+            if tmp.value == valor:
+                return tmp
+            elif tmp.value > valor:
+                return self._buscar(tmp.left, valor)
+            else:
+                return self._buscar(tmp.right, valor)
+        else:
+            raise ValueError('El numero no esta en el arbol')
+        
+    def Eliminar(self, valor):
+        self._Eliminar(self.root, valor)
+
+    def _Eliminar(self, tmp, valor):
+        padre = None
+        lado = None
+        while tmp != None:
+            if tmp.value == valor:
+                if padre == None:
+                    if tmp.left == None and tmp.right != None:
+                        tmp.value = tmp.right.value
+                        tmp.right = None 
+                        tmp.height = 0
+                    else:
+                        recorrido = tmp.left
+                        if recorrido.right == None and recorrido.left == None:
+                            tmp.value = recorrido.value
+                            tmp.left = None
+                            recorrido = None
+                            tmp.height = 0
+                        else:
+                            hijo = 1
+                            while hijo != None:
+                                padre = recorrido 
+                                recorrido = recorrido.right
+                                hijo = recorrido.right
+                            if recorrido.left == None:
+                                tmp.value = recorrido.value
+                                padre.right = None
+                                if padre.left == None:
+                                    padre.height = 0
+                            else:
+                                tmp.value = recorrido.value
+                                recorrido.value = recorrido.left.value
+                                recorrido.left = None
+                                recorrido.height = 0
+                    if padre.right == None and padre.left == None:
+                        padre.height =- 1
+                    
+                else:
+                    if lado == 'i':
+                        if tmp.right == None and tmp.left == None:
+                            padre.left = None
+                            tmp = None
+                        elif tmp.left == None and tmp.right != None:
+                            tmp.value = tmp.right.value
+                            tmp.right = None
+                            tmp.height = 0
+                        else:
+                            recorrido = tmp.left
+                            if recorrido.right == None and recorrido.left == None:
+                                tmp.value = recorrido.value
+                                tmp.left = None
+                                recorrido = None
+                                tmp.height = 0
+                            else:
+                                hijo = 1
+                                while hijo != None:
+                                    padre = recorrido 
+                                    recorrido = recorrido.right
+                                    hijo = recorrido.right
+                                if recorrido.left == None:
+                                    tmp.value = recorrido.value
+                                    padre.right = None
+                                    if padre.left == None:
+                                        padre.height = 0
+                                else:
+                                    tmp.value = recorrido.value
+                                    recorrido.value = recorrido.left.value
+                                    recorrido.left = None
+                                    recorrido.height = 0
+                        if padre.right == None and padre.left == None:
+                            padre.height =- 1
+                        
+                    else:
+                        if tmp.right == None and tmp.left == None:
+                            padre.right = None
+                            tmp = None
+                        elif tmp.left == None and tmp.right != None:
+                            tmp.value = tmp.right.value
+                            tmp.right = None
+                            tmp.height = 0
+                        else:
+                            recorrido = tmp.left
+                            if recorrido.right == None and recorrido.left == None:
+                                tmp.value = recorrido.value
+                                tmp.left = None
+                                recorrido = None
+                                tmp.height = 0
+                            else:
+                                hijo = 1
+                                while hijo != None:
+                                    padre = recorrido 
+                                    recorrido = recorrido.right
+                                    hijo = recorrido.right
+                                if recorrido.left == None:
+                                    tmp.value = recorrido.value
+                                    padre.right = None
+                                    if padre.left == None:
+                                        padre.height = 0
+                                else:
+                                    tmp.value = recorrido.value
+                                    recorrido.value = recorrido.left.value
+                                    recorrido.left = None
+                                    recorrido.height = 0
+                        if padre.right == None and padre.left == None:
+                            padre.height =- 1
+            elif tmp.value > valor:
+                padre = tmp
+                tmp = tmp.left
+                lado = 'i'
+            else:
+                padre = tmp
+                tmp = tmp.right
+                lado = 'd'
+
+
+
+
+
+
 
            
 
@@ -137,13 +271,19 @@ t = AVLTree()
 
 #add
 t.add(5)
-t.add(5)
 t.add(10)
 t.add(20)
 t.add(25)
 t.add(30)
 t.add(35)
 t.add(50)
+t.add(6)
+t.add(11)
+t.add(21)
+t.add(26)
+t.add(31)
+t.add(36)
+t.add(51)
 
 #print traversals
 t.preorder()
@@ -151,5 +291,14 @@ print()
 t.inorder()
 print()
 t.postorder()
+print()
+print(str(t.buscar(10).value))
+
 
 t.ImprimirArbol()
+time.sleep(5)
+t.Eliminar(25)
+t.ImprimirArbol()
+print()
+t.inorder()
+print()
