@@ -1,3 +1,5 @@
+# Codigo basado en el proyecto elaborado por el Ingeniero Luis Espino, bajo la licencia MIT
+# Luis Espino 2020
 import os
 import subprocess
 import time
